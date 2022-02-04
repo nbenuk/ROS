@@ -37,15 +37,26 @@
 ## to the 'chatter' topic
 
 import rospy
-from std_msgs.msg import String
+from std_msgs.msg import String, Int8
 
 def talker():
     pub = rospy.Publisher('chatter', String, queue_size=10)
+    pub2 = rospy.Publisher('numeric_chatter', Int8, queue_size=10)
+
     rospy.init_node('talker', anonymous=True)
     rate = rospy.Rate(10) # 10hz
+    counter = 0
     while not rospy.is_shutdown():
         hello_str = "hello world %s" % rospy.get_time()
+
+        if counter < 127 :
+            counter += 1
+        else : 
+            counter = 0
+        pub2.publish(counter)
         rospy.loginfo(hello_str)
+
+        rospy.loginfo(counter)
         pub.publish(hello_str)
         rate.sleep()
 
